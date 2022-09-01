@@ -67,7 +67,8 @@ async function cardName(name: string) {
 async function expireDate() {
 	const expireDate = new Date();
 	const year = String(expireDate.getFullYear() + 5);
-	const month = expireDate.getMonth();
+	//const month = expireDate.getMonth();
+	const month = (expireDate.getMonth() + 1).toString().padStart(2, "0");
 
 	return `${month}/${year.slice(-2)}`;
 }
