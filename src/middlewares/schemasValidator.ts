@@ -6,8 +6,6 @@ export function validateSchema(schema) {
 		if (error){
 			throw { code: "WrongType", message: "Tipo de cartão incorreto." };
 		}
-			
-		console.log("passou schema validation")
 
 		next();
 	};

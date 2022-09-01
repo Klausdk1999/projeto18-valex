@@ -7,6 +7,5 @@ export function verifyApiKey(req: Request, res: Response, next) {
 		throw { code: "BadRequest", message: "É necessário uma chave de api." };
 
 	res.locals.key = apiKey;
-	console.log("passou apikey")
 	next();
 }

@@ -79,7 +79,7 @@ export async function activateCard(id:number, newPassword:string, code: string) 
 	const card = await cardRepository.findById(id)
 
 	if(!card)
-		throw {code: "NotFound", message: "Não existe esse cartão"}
+		throw {code: "NotFound", message: "Cartão não encontrado"}
 
 	if(checkExpirationDate(card.expirationDate))
 		throw {code: "BadRequest", message: "O cartão está vencido"}
@@ -101,9 +101,10 @@ export async function activateCard(id:number, newPassword:string, code: string) 
 }
 
 function checkExpirationDate(expirationDate: string) {
+
 	const date = new Date();
 	const year = String(date.getFullYear());
-	const month = date.getMonth();
+	const month = (date.getMonth() + 1).toString().padStart(2, "0");
 	const actualDate = `${month}/${year.slice(-2)}`;
 
 	if (actualDate > expirationDate) {
@@ -111,4 +112,29 @@ function checkExpirationDate(expirationDate: string) {
 	} else {
 		return false;
 	}
+}
+
+export async function sendCards(id: number, passwords: string[]) {
+    const cryptr = new Cryptr(process.env.SECRET);
+    const card = await cardRepository.findByEmployeeId(id);
+    
+    if (!card.length) return {};
+
+    const sendInformations = card.map((elem, index) => {
+        const decodedPassword = cryptr.decrypt(elem.password);
+        if (passwords.some((elem) => elem == decodedPassword)) {
+            const numberWithoutDash = elem.number.split("-").join(" ");
+			
+            return {
+                number: numberWithoutDash,
+                cardholderName: elem.cardholderName,
+                expirationDate: elem.expirationDate,
+                securityCode: cryptr.decrypt(elem.securityCode),
+            };
+        } else {
+            return "Senha/Cartão inválidos";
+        }
+    });
+	
+    return { cards: sendInformations };
 }

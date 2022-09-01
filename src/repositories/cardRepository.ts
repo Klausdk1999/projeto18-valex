@@ -51,6 +51,14 @@ export async function findByTypeAndEmployeeId(
   return result.rows[0];
 }
 
+export async function findByEmployeeId(employeeId: number) {
+  const result = await connection.query<Card>(`
+      SELECT * FROM cards WHERE "employeeId" = $1 AND password IS NOT NULL`,
+      [employeeId]
+  );
+  return result.rows;
+}
+
 export async function findByCardDetails(
   number: string,
   cardholderName: string,
