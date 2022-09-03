@@ -32,9 +32,24 @@ export async function sendCards(req:Request, res: Response) {
 export async function sendBalanceAndTransactions(req:Request, res: Response) {
     const { id } = req.params;
 
-    //console.log()
-
 	const balance = await cardsServices.sendBalanceAndTransactions(Number(id));
 
 	res.status(200).send(balance);
+}
+
+
+export async function blockCard(req: Request, res: Response) {
+	const data = req.body;
+
+	await cardsServices.blockCard(Number(data.id), data.password);
+
+	res.sendStatus(200);
+}
+
+export async function unblockCard(req: Request, res: Response) {
+	const data = req.body;
+
+	await cardsServices.unblockCard(Number(data.id), data.password);
+
+	res.sendStatus(200);
 }

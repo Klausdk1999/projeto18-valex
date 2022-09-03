@@ -147,7 +147,6 @@ export async function sendBalanceAndTransactions(id: number) {
 	const transactions = await paymentRepository.findByCardId(id);
     const recharges = await rechargeRepository.findByCardId(id);
 
-
     const totalTransactions: any = sumValues(transactions, "amount")
     const totalRecharge: any = sumValues(recharges, "amount")
 
@@ -165,4 +164,49 @@ function sumValues(array: any[], key: string): number {
 
     return keyValues.reduce((current: number, sum: number) => sum + current, 0);
 
+}
+
+export async function blockCard(id: number, password: string) {
+
+	const cryptr = new Cryptr(process.env.SECRET);
+
+	const card = await cardRepository.findById(id);
+
+	if (!card) throw { code: "NotFound", message: "Cartão não encontrado." };
+
+	const decodedPassword = cryptr.decrypt(card.password);
+
+	if (decodedPassword !== password)
+		throw { code: "Anauthorized", message: "Senha incorreta." };
+
+	if (checkExpirationDate(card.expirationDate))
+		throw { code: "BadRequest", message: "Cartão expirado." };
+
+	if (card.isBlocked)
+		throw { code: "BadRequest", message: "Cartão já bloqueado." };
+
+	await cardRepository.update(id, { isBlocked: true });
+}
+
+export async function unblockCard(id: number, password: string) {
+
+	const cryptr = new Cryptr(process.env.SECRET);
+
+	const card = await cardRepository.findById(id);
+
+	if (!card)
+		throw { code: "NotFound", message: "Cartão não encontrado." };
+
+	const decodedPassword = cryptr.decrypt(card.password);
+
+	if (decodedPassword !== password)
+		throw { code: "Anauthorized", message: "Senha incorreta." };
+
+	if (checkExpirationDate(card.expirationDate))
+		throw { code: "BadRequest", message: "Cartão expirado." };
+
+	if (!card.isBlocked)
+		throw { code: "BadRequest", message: "Cartão já está desbloqueado." };
+
+	await cardRepository.update(id, { isBlocked: false });
 }

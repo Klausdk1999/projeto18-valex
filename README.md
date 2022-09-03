@@ -84,7 +84,7 @@
           "balance": 35000,
           "transactions": [
         		{ "id": 1, "cardId": 1, "businessId": 1, "businessName": "DrivenEats", "timestamp": "22/01/2022", "amount": 5000 }
-        	]
+        	],
           "recharges": [
         		{ "id": 1, "cardId": 1, "timestamp": "21/01/2022", "amount": 40000 }
         	]
