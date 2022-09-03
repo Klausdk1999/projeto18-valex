@@ -10,6 +10,6 @@ const cardsRouter = Router();
 cardsRouter.post("/cards", verifyApiKey, validateSchema(typeCards), newCard);
 cardsRouter.put("/activatecard", activateCard);
 cardsRouter.get("/card", sendCards);
-cardsRouter.get("/balance", sendBalanceAndTransactions);
+cardsRouter.get("/balance/:id", sendBalanceAndTransactions);
 
 export default cardsRouter;
