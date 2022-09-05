@@ -103,8 +103,7 @@ export async function activateCard(id:number, newPassword:string, code: string) 
 
 }
 
-function checkExpirationDate(expirationDate: string) {
-
+export function checkExpirationDate(expirationDate: string) {
 	const date = new Date();
 	const year = String(date.getFullYear());
 	const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -210,3 +209,4 @@ export async function unblockCard(id: number, password: string) {
 
 	await cardRepository.update(id, { isBlocked: false });
 }
+
