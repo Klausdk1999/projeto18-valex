@@ -5,6 +5,6 @@ import paymentSchema from "../schemas/paymentSchema.js";
 
 const paymentRouter = Router();
 
-paymentRouter.post("/payments/:id", validateSchema(paymentSchema), cardPayments); //id do estabelecimento no param
+paymentRouter.post("/payments/:id", validateSchema(paymentSchema), cardPayments);
 
 export default paymentRouter;
